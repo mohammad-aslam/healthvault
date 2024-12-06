@@ -2,13 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% extends 'base.html' %}
-
-{% block title %}help{% endblock %}
-
-{% block content %}
-
-
+    <title>Medical Cost Help</title>
 
     <style>
         body {
@@ -83,8 +77,27 @@
             background-color: #0056b3;
         }
 
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
     </style>
+
     <script>
+        // Toggle FAQ visibility
         function toggleFaq(index) {
             const contents = document.querySelectorAll('.faq-content');
             contents.forEach((content, idx) => {
@@ -95,9 +108,71 @@
                 }
             });
         }
+
+        // Save form data to localStorage and display it in the table
+        function handleSubmit(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const name = document.getElementById("name").value;
+            const phone = document.getElementById("phone").value;
+            const message = document.getElementById("message").value;
+
+            const formData = { name, phone, message };
+
+            // Retrieve existing data from localStorage, or initialize an empty array if none
+            let storedData = JSON.parse(localStorage.getItem('formData')) || [];
+
+            // Add the new form data
+            storedData.push(formData);
+
+            // Save the updated data back to localStorage
+            localStorage.setItem('formData', JSON.stringify(storedData));
+
+            // Call a function to update the table with the latest data
+            displayTableData();
+
+            // Clear the form inputs
+            document.getElementById("name").value = "";
+            document.getElementById("phone").value = "";
+            document.getElementById("message").value = "";
+        }
+
+        // Display stored form data in the table
+        function displayTableData() {
+            const tableBody = document.getElementById("table-body");
+            tableBody.innerHTML = ""; // Clear the current table content
+
+            // Retrieve stored data from localStorage
+            const storedData = JSON.parse(localStorage.getItem('formData')) || [];
+
+            // Populate the table with the stored data
+            storedData.forEach((data, index) => {
+                const row = document.createElement("tr");
+
+                const nameCell = document.createElement("td");
+                nameCell.textContent = data.name;
+                row.appendChild(nameCell);
+
+                const phoneCell = document.createElement("td");
+                phoneCell.textContent = data.phone;
+                row.appendChild(phoneCell);
+
+                const messageCell = document.createElement("td");
+                messageCell.textContent = data.message;
+                row.appendChild(messageCell);
+
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Load the table data on page load
+        window.onload = function() {
+            displayTableData();
+        }
     </script>
 </head>
 <body>
+
 <div class="container">
     <h2>Medical Cost Help Page</h2>
 
@@ -135,7 +210,7 @@
 
     <!-- Additional Help Form -->
     <h3>Need More Help?</h3>
-    <form action="#" method="post">
+    <form onsubmit="handleSubmit(event)">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" placeholder="Enter your name" required>
 
@@ -147,15 +222,22 @@
 
         <button type="submit">Submit</button>
     </form>
+
+    <!-- Table to display form data -->
+    <h3>Submitted Queries</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Your Query</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- Data will be populated here -->
+        </tbody>
+    </table>
 </div>
-
-
-</body>
-</html>
-
-{%endblock%}</title>
-</head>
-<body>
 
 </body>
 </html>

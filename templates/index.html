@@ -78,7 +78,9 @@
 <div class="container">
     <div class="add-form">
         <h4>Add New Details</h4>
+        <input type="text" id="newName" placeholder="name">
         <input type="number" id="newAge" placeholder="Age">
+        <input type="text" id="newSex" placeholder="sex">
         <input type="number" id="newBmi" placeholder="BMI">
         <input type="number" id="newChildren" placeholder="Children">
         <input type="number" id="newCharges" placeholder="Charges">
@@ -90,7 +92,9 @@
         {% for patient in content %}
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Age: {{ patient.age }}</h5>
+                <h5 class="card-title">Name: {{ patient.name }}</h5>
+                <p class="card-title">Age: {{ patient.age }}</p>
+                <p class="card-text">Sex: {{ patient.sex }}</p>
                 <p class="card-text">BMI: {{ patient.bmi }}</p>
                 <p class="card-text">Children: {{ patient.children }}</p>
                 <p class="card-text">Charges: {{ patient.charges }}</p>
@@ -126,7 +130,9 @@
 
     // Add a new patient
     function addPatient() {
+        const newName = document.getElementById("newName").value;
         const newAge = document.getElementById("newAge").value;
+        const newSex = document.getElementById("newSex").value;
         const newBmi = document.getElementById("newBmi").value;
         const newChildren = document.getElementById("newChildren").value;
         const newCharges = document.getElementById("newCharges").value;
@@ -136,7 +142,9 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                name: newName,
                 age: newAge,
+                sex: newSex,
                 bmi: newBmi,
                 children: newChildren,
                 charges: newCharges,

@@ -17,9 +17,21 @@ def index():
 def patients():
     return render_template('patient.html')
 
-@app.route('/dashboard')
+@app.route('/dashboard', methods=['GET'])
 def dashboard():
-    return render_template('dashboard.html')
+    patient = Patients.query.all()  # ORM query to fetch data
+    patient = [{
+        'id': patient.id,
+        'name': patient.name,
+        'age': patient.age,
+        'sex': patient.sex,
+        'bmi': patient.bmi,
+        'children': patient.children,
+        'charges': patient.charges,
+        'region': patient.region
+    } for patient in patient]
+    return render_template('dashboard.html', content=patient)
+
 
 @app.route('/contact')
 def contact():
@@ -41,7 +53,9 @@ def submit():
     form_data = request.form.to_dict()
     print(f"form_data: {form_data}")
 
+    name = form_data.get('name')
     age = form_data.get('age')
+    sex = form_data.get('sex')
     bmi = form_data.get('bmi')
     children = form_data.get('children')
     charges = form_data.get('charges')
@@ -50,7 +64,7 @@ def submit():
 
     patient = Patients.query.filter_by(age=age).first()
     if not patient:
-        patient = Patients(age=age, bmi=bmi, children=children, charges=charges, region=region)
+        patient = Patients(name=name,age=age,sex=sex, bmi=bmi, children=children, charges=charges, region=region)
         db.session.add(patient)
         db.session.commit()
     print("sumitted successfully")
@@ -68,6 +82,7 @@ def delete(id):
     try:
         db.session.delete(patient)
         db.session.commit()
+        return redirect('/')
         return jsonify({'message': 'patient deleted successfully'}), 200
     except Exception as e:
         db.session.rollback()
@@ -83,7 +98,9 @@ def add_patient():
 
         # Create a new patient instance
         patient = Patients(
+            name=data.get('name'),
             age=data.get('age'),
+            sex=data.get('sex'),
             bmi=data.get('bmi'),
             children=data.get('children'),
             charges=data.get('charges'),
@@ -111,7 +128,9 @@ def update(id):
         return jsonify({'message': 'patient not found'}), 404
 
     if request.method == 'POST':
+        patient.name = request.form['name']
         patient.age = request.form['age']
+        patient.sex = request.form['sex']
         patient.bmi = request.form['bmi']
         patient.children = request.form['children']
         patient.charges = request.form['charges']
@@ -125,6 +144,13 @@ def update(id):
             db.session.rollback()
             return "there is an issue while updating the record"
     return render_template('update.html', patient=patient)
+
+
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('query', '')
+    patient = Patients.query.filter(Patients.name.ilike(f"%{query}%")).all() if query else []
+    return render_template('search.html', patient=patient, query=query)
 
 
 
