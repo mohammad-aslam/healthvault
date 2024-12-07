@@ -33,6 +33,7 @@ def dashboard():
     return render_template('dashboard.html', content=patient)
 
 
+
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
