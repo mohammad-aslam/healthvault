@@ -1,8 +1,5 @@
-{% extends 'base.html' %}
-
-{% block title %}Home Page{% endblock %}
-
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Medical Cost Help</title>
@@ -296,7 +293,8 @@
     </form>
 
     <!-- Show Table Button -->
-    <button onclick="toggleModal()">Show Submitted Queries</button>
+    <button><a href="/queries">Show Queries</a></button>
+
 </div>
 
 <!-- Modal for displaying table -->
@@ -322,4 +320,4 @@
 <div id="modal-overlay" class="modal-overlay" onclick="toggleModal()"></div>
 
 </body>
-{%endblock%}
+</html>

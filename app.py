@@ -13,6 +13,10 @@ def index():
     patient = Patients.query.all()
     return render_template('index.html',  content=patient)
 
+@app.route('/queries')
+def queries():
+    return render_template('queries.html')
+
 @app.route('/patients')
 def patients():
     return render_template('patient.html')
